@@ -181,21 +181,18 @@ Clearly this is not a scalable solution for a blog with thousands of posts. Real
 If you wish to configure your own remark plugins you can do so through the `remix.config.js`'s `mdx` export:
 
 ```js filename=remix.config.js
-const {
-  remarkMdxFrontmatter,
-} = require("remark-mdx-frontmatter");
-
 // can be an sync / async function or an object
 exports.mdx = async (filename) => {
-  const [rehypeHighlight, remarkToc] = await Promise.all([
+  const [rehypeHighlight, remarkToc, remarkMdxFrontmatter] = await Promise.all([
     import("rehype-highlight").then((mod) => mod.default),
     import("remark-toc").then((mod) => mod.default),
+    import("remark-mdx-frontmatter").then(mod => mod.default),
   ]);
 
   return {
-    remarkPlugins: [remarkToc],
-    rehypePlugins: [rehypeHighlight],
-  };
+    remarkMdxFrontmatter: [remarkToc,remarkMdxFrontmatter],
+    rehypePlugins: [rehypeHighlight]
+  }
 };
 ```
 
